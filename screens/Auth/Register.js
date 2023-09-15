@@ -31,6 +31,7 @@ import { ALERT_TYPE, Dialog, Toast } from "react-native-alert-notification";
 // import {Apilink} from '@env'
 
 export default function Register({ route, navigation }) {
+
   const insets = useSafeAreaInsets();
   const [errors, setErrors] = React.useState({});
   const [loading, setLoading] = React.useState(false);
@@ -93,15 +94,14 @@ export default function Register({ route, navigation }) {
         const body = { ...inputs };
         const response = await axios.post(
           // "https://faxxway-delivery-api.onrender.com/api/register",
-          "http://localhost:4000/api/register",
+          "https://sendit-bcknd.onrender.com/api/register",
           body
         );
-        console.log("second");
-        console.log(response.data.user.main);
-        console.log(response.data.user.main._id);
+        // console.log("second");
+        console.log(response.data.user);
+        // console.log(response.data.user.main._id);
         if (response) {
-          console.log(response.data);
-
+          console.log(response.data); 
           if (response.data.error == true) {
             console.log(response.data.error);
             Toast.show({
@@ -111,26 +111,32 @@ export default function Register({ route, navigation }) {
             });
           } else if (response.data.error === false) {
             console.log("saving user now");
-            await AsyncStorage.setItem(
-              "useremail",
-              JSON.stringify(response.data.user.main.email)
-            );
-            await AsyncStorage.setItem(
-              "usernumber",
-              JSON.stringify(response.data.user.main.number)
-            );
-            await AsyncStorage.setItem(
-              "userID",
-              JSON.stringify(response.data.user.main._id)
-            );
-            Toast.show({
-              type: ALERT_TYPE.SUCCESS,
-              title: "Success",
-              textBody: response.data.message,
-            });
-            setTimeout(() => {
-              navigation.navigate("Login");
-            }, 3000);
+            if(response && response.data && response.data.user) {  
+              await AsyncStorage.setItem(
+                "useremail",
+                JSON.stringify(response.data.user.email)
+              );
+              await AsyncStorage.setItem(
+                "usernumber",
+                JSON.stringify(response.data.user.number)
+              );
+              await AsyncStorage.setItem(
+                "userID",
+                JSON.stringify(response.data.user._id)
+              );
+              Toast.show({
+                type: ALERT_TYPE.SUCCESS,
+                title: "Success",
+                textBody: response.data.message,
+              });
+              setTimeout(() => {
+                navigation.navigate("Login");
+              }, 1000);
+
+            } else {
+              // Handle the case where the response or its properties are undefined
+              console.error("Response or its properties are undefined.");
+            }
           }
         }
       } catch (error) {
@@ -138,7 +144,7 @@ export default function Register({ route, navigation }) {
         Toast.show({
           type: ALERT_TYPE.DANGER,
           title: "Failed",
-          textBody:'Something went wrong.',
+          textBody:'Something went wrong check your internet.',
         });
         return;
       } finally {
@@ -350,3 +356,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
+
+  

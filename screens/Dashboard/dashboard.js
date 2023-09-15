@@ -8,41 +8,128 @@ import {
   TouchableOpacity,
   Dimensions,
 } from "react-native";
-import React, { useCallback, useRef, useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import {
   SafeAreaView,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 import Header from "../../component/sub-component/header";
 import {
-  FontAwesome,
   FontAwesome5,
-  Ionicons,
-  Entypo,
-  AntDesign,
   MaterialIcons,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 import { AnimatedView, COLORS, SIZES } from "../../constant/Theme";
-import { Shadow } from "react-native-shadow-2";
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import PhotoBottomSheet from "../../component/PhotoBottomSheet";
-
+import { ALERT_TYPE, Dialog, Toast } from "react-native-alert-notification";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Loader from "../../component/form/Loader";
 const width = Dimensions.get("window").width - 70;
 
 // width: SIZES.width - 80,
 
-const Dashboard = ({ navigation }) => {
+const Dashboard = ({ navigation, route }) => {
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  // const FetchData = (async() => {
+  //   setLoading(true);
+  //   const userId = await AsyncStorage.getItem("userID");
+  //   console.log("Fetched userID:", userId);
+  //   const apiUrl =
+  //     "https://sendit-bcknd.onrender.com/api/getUserDetails/${userId}";
+
+  //   axios.get(apiUrl)
+  //     .then((response) => {
+  //       setUserData(response.data);
+  //       setLoading(false);
+  //       console.log(response.data);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching user data:", error);
+  //       setLoading(false);
+  //       Dialog.show({
+  //         type: ALERT_TYPE.DANGER,
+  //         title: "Error",
+  //         textBody: "An error occurred. Please check your internet connection!",
+  //         actions: [
+  //           {
+  //             text: "OK",
+  //             onPress: () => {
+  //               Dialog.hide();
+  //             },
+  //           },
+  //         ],
+  //       });
+  //     });
+  // })
+
+  const FetchData = async () => {
+    try {
+      console.log("Fetching user data...");
+      const userId = await AsyncStorage.getItem("userID");
+      JSON.stringify(userId);
+
+      if (!userId || !userId.match(/^[0-9a-fA-F]{24}$/)) {
+        // Handle the case where userID is not available or invalid format
+        console.log("Invalid userID format.");
+        setLoading(false); // Set loading to false in case of error
+        return;
+      }
+
+      const headers = {
+        Authorization: userId, // Set the "id" in the "Authorization" header
+      };
+
+      const response = await axios.get(
+        `https://sendit-bcknd.onrender.com/api/getUserDetails`,
+        {
+          headers,
+        }
+      );
+
+      console.log("API Response:", response.data);
+
+      if (!response.data.user) {
+        console.log("User data not found in API response.");
+        setLoading(false); // Set loading to false in case of error
+        return;
+      }
+
+      const { user } = response.data;
+      setUserData(user);
+      console.log("User data fetched:", user);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      Dialog.show({
+        type: ALERT_TYPE.DANGER,
+        title: "Error",
+        textBody: "An error occurred. Please check your internet connection!",
+        actions: [
+          {
+            text: "OK",
+            onPress: () => {
+              Dialog.hide();
+            },
+          },
+        ],
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    FetchData();
+  }, []);
+
+
   const NavigateToProfile = () => {
     console.log("first Func");
     navigation.navigate("ProfileNav");
   };
 
   const insets = useSafeAreaInsets();
-
-  const sheetRef = useRef(null);
-  const [isOpen, setIsOpen] = useState(true);
-  const snapPoints = ["50%"];
 
   return (
     <SafeAreaView
@@ -54,144 +141,169 @@ const Dashboard = ({ navigation }) => {
         padding: 0,
       }}
     >
-      <View>
-        <Header onPress={NavigateToProfile} />
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View
-            style={{
-              width: "100%",
-              marginVertical: 10,
-            }}
-          >
-            <Text style={{ fontSize: 20, fontWeight: "500", color: "#363636" }}>
-              Send Gifts And Many More
-            </Text>
-          </View>
-          <View style={{ paddingVertical: 20 }}>
-            <Image
-              style={{ width: "100%", height: 200, borderRadius: 8 }}
-              source={require("../../assets/card.png")}
-              resizeMode="cover"
-            />
-          </View>
-
-          <View
-            styl={{ borderWidth: 0.5, borderColor: "#ccc", paddingVertical: 3 }}
-          >
-            <Text
+      {loading ? (
+        <SafeAreaView
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Text style={{ fontSize: 20, color: "gray" }}>Loading...</Text>
+        </SafeAreaView>
+      ) : userData ? (
+        <View>
+          <Header onPress={NavigateToProfile} />
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View
               style={{
-                fontSize: 18,
-                fontWeight: "500",
-                color: "#363636",
+                width: "100%",
+                marginVertical: 10,
               }}
             >
-              Type Of Service
-            </Text>
-          </View>
+              <Text
+                style={{ fontSize: 20, fontWeight: "500", color: "#363636" }}
+              >
+                Send Gifts And Many More
+              </Text>
+            </View>
+            <View style={{ paddingVertical: 20 }}>
+              <Image
+                style={{ width: "100%", height: 200, borderRadius: 8 }}
+                source={require("../../assets/card.png")}
+                resizeMode="cover"
+              />
+            </View>
 
-          <View style={styles.FlexBox}>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={styles.square}
-              onPress={() => navigation.navigate("CreateDelivery")}
+            <View
+              styl={{
+                borderWidth: 0.5,
+                borderColor: "#ccc",
+                paddingVertical: 3,
+              }}
             >
-              <View
+              <Text
                 style={{
-                  height: 100,
-                  justifyContent: "center",
-                  alignItems: "center",
+                  fontSize: 18,
+                  fontWeight: "500",
+                  color: "#363636",
                 }}
               >
-                <MaterialCommunityIcons
-                  name="bike-fast"
-                  size={30}
-                  color="#6c63ff"
-                />
-                <Text
-                  style={{
-                    textAlign: "center",
-                    fontSize: 19,
-                    fontWeight: "400",
-                    margin: 10,
-                  }}
-                >
-                  Quick Ride
-                </Text>
-              </View>
-            </TouchableOpacity>
+                Type Of Service
+              </Text>
+            </View>
 
-            <TouchableOpacity activeOpacity={0.8} style={styles.square}>
-              <View
-                style={{
-                  height: 100,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
+            <View style={styles.FlexBox}>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={styles.square}
+                onPress={() => navigation.navigate("CreateDelivery")}
               >
-                <FontAwesome5 name="box" size={30} color="#6c63ff" />
-                <Text
+                <View
                   style={{
-                    textAlign: "center",
-                    fontSize: 18,
-                    fontWeight: "400",
-                    margin: 10,
+                    height: 100,
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
-                  Send Courier
-                </Text>
-              </View>
-            </TouchableOpacity>
+                  <MaterialCommunityIcons
+                    name="bike-fast"
+                    size={30}
+                    color="#6c63ff"
+                  />
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      fontSize: 19,
+                      fontWeight: "400",
+                      margin: 10,
+                    }}
+                  >
+                    Quick Ride
+                  </Text>
+                </View>
+              </TouchableOpacity>
 
-            <TouchableOpacity activeOpacity={0.8} style={styles.square}>
-              <View
-                style={{
-                  height: 100,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <MaterialCommunityIcons
-                  name="google-nearby"
-                  size={30}
-                  color="#6c63ff"
-                />
-                <Text
+              <TouchableOpacity activeOpacity={0.8} style={styles.square}>
+                <View
                   style={{
-                    textAlign: "center",
-                    fontSize: 19,
-                    fontWeight: "400",
-                    margin: 10,
+                    height: 100,
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
-                  Nearby Drop
-                </Text>
-              </View>
-            </TouchableOpacity>
+                  <FontAwesome5 name="box" size={30} color="#6c63ff" />
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      fontSize: 18,
+                      fontWeight: "400",
+                      margin: 10,
+                    }}
+                  >
+                    Send Courier
+                  </Text>
+                </View>
+              </TouchableOpacity>
 
-            <TouchableOpacity activeOpacity={0.8} style={styles.square}>
-              <View
-                style={{
-                  height: 100,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <MaterialIcons name="support-agent" size={30} color="#6c63ff" />
-                <Text
+              <TouchableOpacity activeOpacity={0.8} style={styles.square}>
+                <View
                   style={{
-                    textAlign: "center",
-                    fontSize: 19,
-                    fontWeight: "400",
-                    margin: 10,
+                    height: 100,
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
-                  Customer Support
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </View>
+                  <MaterialCommunityIcons
+                    name="google-nearby"
+                    size={30}
+                    color="#6c63ff"
+                  />
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      fontSize: 19,
+                      fontWeight: "400",
+                      margin: 10,
+                    }}
+                  >
+                    Nearby Drop
+                  </Text>
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity activeOpacity={0.8} style={styles.square}>
+                <View
+                  style={{
+                    height: 100,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <MaterialIcons
+                    name="support-agent"
+                    size={30}
+                    color="#6c63ff"
+                  />
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      fontSize: 19,
+                      fontWeight: "400",
+                      margin: 10,
+                    }}
+                  >
+                    Customer Support
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </View>
+      ) : (
+        // Show loader if loading is complete but no user data is available
+        <SafeAreaView
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Text>Loading...</Text>
+        </SafeAreaView>
+      )}
     </SafeAreaView>
   );
 };

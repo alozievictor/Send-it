@@ -18,7 +18,7 @@ import Button from "../../component/Button";
 import { Ionicons } from "@expo/vector-icons";
 import { AnimatedView, COLORS, SIZES } from "../../constant/Theme";
 // import Register from "./Register";
-import AsynceStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import FormSelectedBtn from "../../component/formSelectedBtn";
 import FormContainer from "../../component/form/formContainer";
 import Loader from "../../component/form/Loader";
@@ -59,72 +59,68 @@ const Login = ({ navigation }) => {
     }
 
     if (valid) {
-      // LoginUser();
       navigation.navigate("Tab");
-      try {
-        setLoading(true);
-        const body = { ...inputs };
-        const response = await axios.post(
-          // "https://faxxway-delivery-api.onrender.com/api/register",
-          "",
-          body
-        );
-        console.log("second");
-        // console.log(response.data.user.main._id);
-        if (response) {
-          console.log(response.data);
+      // try {
+      //   setLoading(true);
+      //   const body = { ...inputs };
+      //   const response = await axios.post(
+      //     "https://sendit-bcknd.onrender.com/api/login/email",
+      //     body
+      //   );
+      //   console.log("second");
+      //   // console.log(response.data.user.main._id);
+      //   if (response) {
+      //     if (response.data.error == true) {
+      //       console.log(response.data.error);
+      //       Toast.show({
+      //         type: ALERT_TYPE.DANGER,
+      //         title: "Failed",
+      //         textBody: response.data.message,
+      //       });
+      //     } else if (response.data.error === false) {
+      //       console.log("Process Login");
+      //       if(response && response.data && response.data.user) {  
+      //         await AsyncStorage.setItem(
+      //           "useremail",
+      //           JSON.stringify(response.data.user.email)
+      //         );
+      //         await AsyncStorage.setItem(
+      //           "usernumber",
+      //           JSON.stringify(response.data.user.number)
+      //         );
+      //         await AsyncStorage.setItem(
+      //           "userID",
+      //           JSON.stringify(response.data.user._id)
+      //         );
+      //         Toast.show({
+      //           type: ALERT_TYPE.SUCCESS,
+      //           title: "Success",
+      //           textBody: response.data.message,
+      //         });
+      //         setTimeout(() => {
+      //           navigation.navigate("Tab");
+      //         }, 1000);
 
-          if (response.data.error == true) {
-            console.log(response.data.error);
-            Toast.show({
-              type: ALERT_TYPE.DANGER,
-              title: "Failed",
-              textBody: response.data.message,
-            });
-          } else if (response.data.error === false) {
-            console.log("saving user now");
-            await AsyncStorage.setItem(
-              "useremail",
-              JSON.stringify(response.data.user.main.email)
-            );
-            await AsyncStorage.setItem(
-              "userpassword",
-              JSON.stringify(response.data.user.main.password)
-            );
-            await AsyncStorage.setItem(
-              "usernumber",
-              JSON.stringify(response.data.user.main.number)
-            );
-            await AsyncStorage.setItem(
-              "userID",
-              JSON.stringify(response.data.user.main._id)
-            );
-            Toast.show({
-              type: ALERT_TYPE.SUCCESS,
-              title: "Success",
-              textBody: response.data.message,
-            });
-            setTimeout(() => {
-              navigation.navigate("Login");
-            }, 3000);
-          }
-        }
-      } catch (error) {
-        console.log(error);
-        Toast.show({
-          type: ALERT_TYPE.DANGER,
-          title: "Failed",
-          textBody: "Error', 'Something went wrong.",
-        });
-        return;
-      } finally {
-        setLoading(false);
-        return;
-      }
+      //       } else {
+      //         // Handle the case where the response or its properties are undefined
+      //         console.error("Response or its properties are undefined.");
+      //       }
+      //     }
+      //   }
+      // } catch (error) {
+      //   console.log(error);
+      //   Toast.show({
+      //     type: ALERT_TYPE.DANGER,
+      //     title: "Failed",
+      //     textBody:"Something went wrong check your internet.",
+      //   });
+      //   return;
+      // } finally {
+      //   setLoading(false);
+      //   return;
+      // }
     }
   };
-
-  
 
   const handleOnchange = (text, input) => {
     setInputs((prevState) => ({ ...prevState, [input]: text }));

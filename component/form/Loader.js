@@ -7,8 +7,9 @@ const Loader = ({visible = false }) => {
 
   return  visible && <View style={[styles.container, {width, height}]}> 
     <View style={styles.loader}>
-        <ActivityIndicator size="large" color="#6c63ff" />
-        <Text style={{marginLeft:10, fontSize:16}}>Loading...</Text>
+        <Text style={{marginLeft:10, fontSize:16}}>
+            <ActivityIndicator size="large" color="#6c63ff" />
+        </Text>
     </View>
   </View>
 
@@ -22,15 +23,16 @@ const styles = StyleSheet.create({
         position:'absolute',
         zIndex:100,
         justifyContent:'center',
-        backgroundColor:'rgba(0,0,0,0.5)'
+        backgroundColor:'rgba(0,0,0,0.6)'
     },
     loader: {
-        height:70,
-        backgroundColor:"white",
-        marginHorizontal:50,
-        borderRadius:5,
-        flexDirection:'row',
+        // height:70,
+        // backgroundColor:"white",
+        // marginHorizontal:50,
+        // borderRadius:5,
+        // flexDirection:'row',
+        justifyContent:'center',
         alignItems:'center',
-        paddingHorizontal:20
+        // paddingHorizontal:20
     }
 })
