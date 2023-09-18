@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import NewOrder from "./NewOrder";
 import ReDets from "./ReDets";
 import Payment from "./Payment";
+import Checkout from "./Checkout";
 
 const Stack = createNativeStackNavigator();
 
@@ -12,11 +13,11 @@ const CreateDelivery = () => {
       <Stack.Navigator
         screenOptions={{
           header: () => null,
-          
         }}
       >
         <Stack.Screen name="Neworder" component={NewOrder}/>
         <Stack.Screen name="Recieve" component={ReDets}/>
+        <Stack.Screen name="Checkout" component={Checkout}/>
         <Stack.Screen name="Payment" component={Payment}/>
         
       </Stack.Navigator>

@@ -11,15 +11,18 @@ const Header = (props) => {
     props.onPress()
   }
 
- 
   return (
     <View style={styles.container}>
       <View style={styles.profileCont}>
         <View style={styles.cityCont}>
-            {/* <MaterialCommunityIcons name="map-marker" size={23} color="#e7a368" />
-            <Text style={{paddingLeft:3, fontSize:16, fontWeight:'500'}}>City</Text> */}
+          {props.userData && (
+            <>
+              <Text style={{ paddingLeft: 3, fontSize: 18, fontWeight: '500' }}>
+                Hi {props.userData.user.name}
+              </Text>
+            </>
+          )}
         </View>
-
         <TouchableOpacity 
           onPress={closeHandler}
           style={styles.cityCont}>

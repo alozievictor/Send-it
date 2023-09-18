@@ -59,66 +59,67 @@ const Login = ({ navigation }) => {
     }
 
     if (valid) {
-      navigation.navigate("Tab");
-      // try {
-      //   setLoading(true);
-      //   const body = { ...inputs };
-      //   const response = await axios.post(
-      //     "https://sendit-bcknd.onrender.com/api/login/email",
-      //     body
-      //   );
-      //   console.log("second");
-      //   // console.log(response.data.user.main._id);
-      //   if (response) {
-      //     if (response.data.error == true) {
-      //       console.log(response.data.error);
-      //       Toast.show({
-      //         type: ALERT_TYPE.DANGER,
-      //         title: "Failed",
-      //         textBody: response.data.message,
-      //       });
-      //     } else if (response.data.error === false) {
-      //       console.log("Process Login");
-      //       if(response && response.data && response.data.user) {  
-      //         await AsyncStorage.setItem(
-      //           "useremail",
-      //           JSON.stringify(response.data.user.email)
-      //         );
-      //         await AsyncStorage.setItem(
-      //           "usernumber",
-      //           JSON.stringify(response.data.user.number)
-      //         );
-      //         await AsyncStorage.setItem(
-      //           "userID",
-      //           JSON.stringify(response.data.user._id)
-      //         );
-      //         Toast.show({
-      //           type: ALERT_TYPE.SUCCESS,
-      //           title: "Success",
-      //           textBody: response.data.message,
-      //         });
-      //         setTimeout(() => {
-      //           navigation.navigate("Tab");
-      //         }, 1000);
+      // navigation.navigate("Tab");
+      await AsyncStorage.clear();
+      try {
+        setLoading(true);
+        const body = { ...inputs };
+        const response = await axios.post(
+          "https://sendit-bcknd.onrender.com/api/login/email",
+          body
+        );
+        console.log("second");
+        // console.log(response.data.user.main._id);
+        if (response) {
+          if (response.data.error == true) {
+            console.log(response.data.error);
+            Toast.show({
+              type: ALERT_TYPE.DANGER,
+              title: "Failed",
+              textBody: response.data.message,
+            });
+          } else if (response.data.error === false) {
+            console.log("Process Login");
+            if(response && response.data && response.data.user) {  
+              await AsyncStorage.setItem(
+                "useremail",
+                JSON.stringify(response.data.user.email)
+              );
+              await AsyncStorage.setItem(
+                "usernumber",
+                JSON.stringify(response.data.user.number)
+              );
+              await AsyncStorage.setItem(
+                "userID",
+                JSON.stringify(response.data.user._id)
+              );
+              Toast.show({
+                type: ALERT_TYPE.SUCCESS,
+                title: "Success",
+                textBody: response.data.message,
+              });
+              setTimeout(() => {
+                navigation.navigate("Tab");
+              }, 1000);
 
-      //       } else {
-      //         // Handle the case where the response or its properties are undefined
-      //         console.error("Response or its properties are undefined.");
-      //       }
-      //     }
-      //   }
-      // } catch (error) {
-      //   console.log(error);
-      //   Toast.show({
-      //     type: ALERT_TYPE.DANGER,
-      //     title: "Failed",
-      //     textBody:"Something went wrong check your internet.",
-      //   });
-      //   return;
-      // } finally {
-      //   setLoading(false);
-      //   return;
-      // }
+            } else {
+              // Handle the case where the response or its properties are undefined
+              console.error("Response or its properties are undefined.");
+            }
+          }
+        }
+      } catch (error) {
+        console.log(error);
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: "Failed",
+          textBody:"Something went wrong check your internet.",
+        });
+        return;
+      } finally {
+        setLoading(false);
+        return;
+      }
     }
   };
 

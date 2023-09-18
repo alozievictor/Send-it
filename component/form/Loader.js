@@ -23,7 +23,9 @@ const styles = StyleSheet.create({
         position:'absolute',
         zIndex:100,
         justifyContent:'center',
-        backgroundColor:'rgba(0,0,0,0.6)'
+        backgroundColor:'rgba(0,0,0,0.6)',
+        width:"100%",
+        height:'100%'
     },
     loader: {
         // height:70,

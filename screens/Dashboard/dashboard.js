@@ -7,6 +7,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -27,6 +28,8 @@ import Loader from "../../component/form/Loader";
 const width = Dimensions.get("window").width - 70;
 
 // width: SIZES.width - 80,
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 const Dashboard = ({ navigation, route }) => {
   const [userData, setUserData] = useState(null);
@@ -64,41 +67,145 @@ const Dashboard = ({ navigation, route }) => {
   //     });
   // })
 
+  // const FetchData = async () => {
+  //   const id = await AsyncStorage.getItem("userID");
+  //   JSON.stringify(id);
+  //   console.log(id);
+
+  //   try {
+  //     AsyncStorage.getItem("userID").then((userId) => {
+  //       if (userId) {
+  //         // Make an Axios request to fetch user details using the user ID
+  //         axios
+  //           .get(`https://sendit-bcknd.onrender.com/api/getUserDetails/${id}`)
+  //           .then((response) => {
+  //             console.log(response.data)
+  //             if (response.data.error == true) {
+  //               console.error("Error fetching user data:");
+  //               Dialog.show({
+  //                 type: ALERT_TYPE.DANGER,
+  //                 title: "Error",
+  //                 textBody:
+  //                   "An error occurred. Please check your internet connection!",
+  //                 actions: [
+  //                   {
+  //                     text: "OK",
+  //                     onPress: () => {
+  //                       Dialog.hide();
+  //                     },
+  //                   },
+  //                 ],
+  //               });
+  //             } else {
+  //               setUserData(response.data);
+  //               console.log(response.data);
+  //             }
+  //           })
+  //           .catch((error) => {
+  //             console.error(error);
+  //           });
+  //       }
+  //     });
+
+  //     // if (!id) {
+  //     //   console.log("Invalid userID format.");
+  //     //   setLoading(false);
+  //     //   return;
+  //     // }
+
+  //     // const headers = {
+  //     //   authorization: id,
+  //     // };
+
+  //     // const response = await axios.get(
+  //     //   `https://sendit-bcknd.onrender.com/api/getUserDetails/${id}`,
+  //     //   {
+  //     //     headers,
+  //     //   }
+  //     // );
+
+  //     // console.log("API Response:", response.data);
+
+  //     // if (!response.data.user) {
+  //     //   console.log("User data not found in API response.");
+  //     //   setLoading(false); // Set loading to false in case of error
+  //     //   return;
+  //     // }
+
+  //     // const { user } = response.data;
+  //     // setUserData(user);
+  //     // console.log("User data fetched:", user);
+  //   } catch (error) {
+  //     console.error("Error fetching user data:", error);
+  //     Dialog.show({
+  //       type: ALERT_TYPE.DANGER,
+  //       title: "Error",
+  //       textBody: "An error occurred. Please check your internet connection!",
+  //       actions: [
+  //         {
+  //           text: "OK",
+  //           onPress: () => {
+  //             Dialog.hide();
+  //           },
+  //         },
+  //       ],
+  //     });
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const FetchData = async () => {
+    // const id = await AsyncStorage.getItem("userID");
+    const id = JSON.parse(await AsyncStorage.getItem("userID"));
+    // const userId = JSON.parse(await AsyncStorage.getItem("userID"));
+    console.log(id);
+
     try {
-      console.log("Fetching user data...");
-      const userId = await AsyncStorage.getItem("userID");
-      JSON.stringify(userId);
-
-      if (!userId || !userId.match(/^[0-9a-fA-F]{24}$/)) {
-        // Handle the case where userID is not available or invalid format
-        console.log("Invalid userID format.");
-        setLoading(false); // Set loading to false in case of error
-        return;
+      if (id) {
+        // Make an Axios request to fetch user details using the user ID
+        axios
+          .get(`https://sendit-bcknd.onrender.com/api/getUserDetails/${id}`)
+          .then((response) => {
+            console.log(response.data);
+            if (response.data.error === true) {
+              console.error("Error fetching user data:", response.data.message); // Log the error message from the response
+              Dialog.show({
+                type: ALERT_TYPE.DANGER,
+                title: "Error",
+                textBody:
+                  "An error occurred. Please check your internet connection!",
+                actions: [
+                  {
+                    text: "OK",
+                    onPress: () => {
+                      Dialog.hide();
+                    },
+                  },
+                ],
+              });
+            } else {
+              setUserData(response.data);
+              console.log(response.data);
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching user data:", error); // Log the error here
+            Dialog.show({
+              type: ALERT_TYPE.DANGER,
+              title: "Error",
+              textBody: "Please check your internet connection!",
+              actions: [
+                {
+                  text: "OK",
+                  onPress: () => {
+                    Dialog.hide();
+                  },
+                },
+              ],
+            });
+          });
       }
-
-      const headers = {
-        Authorization: userId, // Set the "id" in the "Authorization" header
-      };
-
-      const response = await axios.get(
-        `https://sendit-bcknd.onrender.com/api/getUserDetails`,
-        {
-          headers,
-        }
-      );
-
-      console.log("API Response:", response.data);
-
-      if (!response.data.user) {
-        console.log("User data not found in API response.");
-        setLoading(false); // Set loading to false in case of error
-        return;
-      }
-
-      const { user } = response.data;
-      setUserData(user);
-      console.log("User data fetched:", user);
     } catch (error) {
       console.error("Error fetching user data:", error);
       Dialog.show({
@@ -123,7 +230,6 @@ const Dashboard = ({ navigation, route }) => {
     FetchData();
   }, []);
 
-
   const NavigateToProfile = () => {
     console.log("first Func");
     navigation.navigate("ProfileNav");
@@ -139,18 +245,20 @@ const Dashboard = ({ navigation, route }) => {
         paddingHorizontal: 20,
         borderWidth: 2,
         padding: 0,
+        width: "100%",
       }}
     >
       {loading ? (
         <SafeAreaView
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
-          <Text style={{ fontSize: 20, color: "gray" }}>Loading...</Text>
+          {/* <Text style={{ fontSize: 20, color: "gray" }}>Loading...</Text> */}
+          <ActivityIndicator size="large" color="#6c63ff" />
         </SafeAreaView>
       ) : userData ? (
         <View>
-          <Header onPress={NavigateToProfile} />
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <Header onPress={NavigateToProfile} userData={userData}/>
+          <ScrollView showsVerticalScrollIndicator={false} style={{paddingVertical: 20}}>
             <View
               style={{
                 width: "100%",
@@ -165,7 +273,7 @@ const Dashboard = ({ navigation, route }) => {
             </View>
             <View style={{ paddingVertical: 20 }}>
               <Image
-                style={{ width: "100%", height: 200, borderRadius: 8 }}
+                style={{ width: "100%", height: 0.2 * windowHeight, borderRadius: 8 }}
                 source={require("../../assets/card.png")}
                 resizeMode="cover"
               />
@@ -297,11 +405,10 @@ const Dashboard = ({ navigation, route }) => {
           </ScrollView>
         </View>
       ) : (
-        // Show loader if loading is complete but no user data is available
         <SafeAreaView
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
-          <Text>Loading...</Text>
+          <ActivityIndicator size="large" color="#6c63ff" />
         </SafeAreaView>
       )}
     </SafeAreaView>
@@ -333,10 +440,12 @@ const styles = StyleSheet.create({
   },
   FlexBox: {
     // backgroundColor: "#fff",
+    width:windowWidth * 0.9,
+    height:windowHeight * 0.6,
     flexDirection: "row",
-    gap: 14,
+    gap: 12,
     flexWrap: "wrap",
-    paddingVertical: 20,
+    paddingVertical: 15,
     paddingHorizontal: 15,
   },
   square: {

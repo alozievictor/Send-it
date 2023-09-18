@@ -1,22 +1,95 @@
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  ScrollView,
-  Animated,
-  Image
-} from "react-native";
-import React from "react";
-import { Feather, Ionicons, AntDesign, MaterialCommunityIcons, FontAwesome5, Entypo, MaterialIcons } from "@expo/vector-icons";
+import React, { useState, useEffect } from "react";
+import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet } from "react-native";
 import {
   SafeAreaView,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
-import { AnimatedView, COLORS, SIZES } from "../../constant/Theme";
-import Button from "../../component/Button"
+import { Feather, AntDesign, MaterialCommunityIcons, FontAwesome5, Entypo, MaterialIcons } from "@expo/vector-icons";
+import axios from 'axios'; // Don't forget to import axios
+import Button from "../../component/Button";
+import { COLORS } from "../../constant/Theme";
+import { ALERT_TYPE, Dialog, Toast } from "react-native-alert-notification";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 const Profile = ({navigation}) => {
+
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const FetchData = async () => {
+
+    const id = JSON.parse(await AsyncStorage.getItem("userID"));
+    console.log(id);
+
+    try {
+      if (id) {
+        axios
+          .get(`https://sendit-bcknd.onrender.com/api/getUserDetails/${id}`)
+          .then((response) => {
+            console.log(response.data);
+            if (response.data.error === true) {
+              console.error("Error fetching user data:", response.data.message); // Log the error message from the response
+              Dialog.show({
+                type: ALERT_TYPE.DANGER,
+                title: "Error",
+                textBody:
+                  "An error occurred. Please check your internet connection!",
+                actions: [
+                  {
+                    text: "OK",
+                    onPress: () => {
+                      Dialog.hide();
+                    },
+                  },
+                ],
+              });
+            } else {
+              setUserData(response.data);
+              console.log(response.data);
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching user data:", error); // Log the error here
+            Dialog.show({
+              type: ALERT_TYPE.DANGER,
+              title: "Error",
+              textBody: "Please check your internet connection!",
+              actions: [
+                {
+                  text: "OK",
+                  onPress: () => {
+                    Dialog.hide();
+                  },
+                },
+              ],
+            });
+          });
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      Dialog.show({
+        type: ALERT_TYPE.DANGER,
+        title: "Error",
+        textBody: "An error occurred. Please check your internet connection!",
+        actions: [
+          {
+            text: "OK",
+            onPress: () => {
+              Dialog.hide();
+            },
+          },
+        ],
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    FetchData();
+  }, []);
+
 
   const insets = useSafeAreaInsets();
 
@@ -44,11 +117,14 @@ const Profile = ({navigation}) => {
         </Text>
       </View>
       <View>
+
         <View style={{ flexDirection:'row', alignItems:'center', padding:25, borderRadius: 5, elevation:2, backgroundColor: "#fff", marginTop:20 }}>
+          {userData && (
             <View style={{paddingHorizontal:20}}>
-              <Text style={{fontSize:18, fontWeight:'500', color:''}}>UserName</Text>
-              <Text style={{fontSize:15, fontWeight:'500', color:COLORS.small}}>useraccount@gmail.com</Text>
-            </View>
+             <Text style={{fontSize:18, fontWeight:'500', color:''}}>{userData.user.name}</Text>
+             <Text style={{fontSize:15, fontWeight:'500', color:COLORS.small}}>{userData.user.email}</Text>
+           </View>
+          )}
         </View> 
 
         <View style={{paddingVertical:20,}}>
@@ -140,6 +216,5 @@ export default Profile;
 const styles = StyleSheet.create({
   btnDiv: { 
     marginTop:30,
-    
 },
 });

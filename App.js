@@ -43,7 +43,7 @@ export default function App() {
         <AlertNotificationRoot>
           <NavigationContainer>
             <Stack.Navigator
-              initialRouteName="Login"
+              initialRouteName="Register"
               screenOptions={{
                 header: () => null,
               }}

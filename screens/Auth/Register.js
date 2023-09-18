@@ -92,15 +92,17 @@ export default function Register({ route, navigation }) {
       try {
         setLoading(true);
         const body = { ...inputs };
+        
         const response = await axios.post(
-          // "https://faxxway-delivery-api.onrender.com/api/register",
           "https://sendit-bcknd.onrender.com/api/register",
           body
         );
         // console.log("second");
         console.log(response.data.user);
+        console.log(body);
         // console.log(response.data.user.main._id);
         if (response) {
+          await AsyncStorage.clear();
           console.log(response.data); 
           if (response.data.error == true) {
             console.log(response.data.error);
@@ -115,14 +117,6 @@ export default function Register({ route, navigation }) {
               await AsyncStorage.setItem(
                 "useremail",
                 JSON.stringify(response.data.user.email)
-              );
-              await AsyncStorage.setItem(
-                "usernumber",
-                JSON.stringify(response.data.user.number)
-              );
-              await AsyncStorage.setItem(
-                "userID",
-                JSON.stringify(response.data.user._id)
               );
               Toast.show({
                 type: ALERT_TYPE.SUCCESS,
@@ -166,7 +160,7 @@ export default function Register({ route, navigation }) {
   return (
     <SafeAreaView
       style={{
-        paddingTop: insets.top,
+        paddingTop: 10,
         backgroundColor: "#fafafa",
         flex: 1,
         paddingHorizontal: 20,
@@ -177,7 +171,7 @@ export default function Register({ route, navigation }) {
         <ScrollView
           style={{
             width: "100%",
-            paddingTop: 30,
+            paddingTop: 10,
             display:"flex",
             // justifyContent:'center',
             // alignItems:'center'
