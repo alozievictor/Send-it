@@ -158,9 +158,12 @@ const Dashboard = ({ navigation, route }) => {
   const FetchData = async () => {
     // const id = await AsyncStorage.getItem("userID");
     const id = JSON.parse(await AsyncStorage.getItem("userID"));
-    // const userId = JSON.parse(await AsyncStorage.getItem("userID"));
     console.log(id);
-
+    if (id === null) {
+      navigation.navigate('Login');
+      return;
+    }
+    
     try {
       if (id) {
         // Make an Axios request to fetch user details using the user ID

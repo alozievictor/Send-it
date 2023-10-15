@@ -1,131 +1,90 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useRef } from "react";
+import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { Paystack } from "react-native-paystack-webview";
+import Button from "../../component/Button";
+import { SafeAreaView } from "react-native-safe-area-context";
+import axios from "axios";
+import { useOrderState } from "../../component/sub-component/OrderContext";
 
-const Payment = () => {
+import { ALERT_TYPE, Dialog, Toast } from "react-native-alert-notification";
+
+
+const Payment = ({ route }) => {
+  const { senderEmail, senderName, senderNumber, price, } = route.params;
+
+  const paystackWebViewRef = useRef();
+
+  const priceInKobo = (Math.round(price * 100) / 10).toFixed(1)
+
+  const handlePaymentSuccess = async () => {
+    try {
+      const response = await axios.post("https://sendit-bcknd.onrender.com/api/payment/verify", {
+        transactionReference: paymentReference,
+      });
+
+      const { status } = response.data;
+
+      if (status === "success") {
+        console.log("Payment successful");
+      
+      } else {
+
+        console.log("Payment failed");
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: "Failed",
+          textBody: "Payment was not successful. Please try again.",
+        });
+      }
+    } catch (error) {
+      console.error("Error verifying payment:", error);
+      Toast.show({
+        type: ALERT_TYPE.DANGER,
+        title: "Failed",
+        textBody: "An error occurred while verifying the payment.",
+      });
+    }
+  };
+
+
+
+  React.useEffect(()=> {
+    console.log( priceInKobo);
+    console.log(paymentReference)
+  }, [])
+
   return (
-    <View>
-      <Text>Payment</Text>
-    </View>
-  )
-}
+    <SafeAreaView
+      style={{
+        backgroundColor: "#fafafa",
+        flex: 1,
+        paddingHorizontal: 20,
+      }}
+    >
+      <View>
+        <Paystack
+          paystackKey="pk_test_359df4db4bacec91c6773affdf380209e0f59a16"
+          amount={priceInKobo}
+          billingEmail={senderEmail}
+          ref={paystackWebViewRef}
+          activityIndicatorColor="green"
+          onCancel={(e) => {
+            console.log("Opps payment failed");
+          }}
+          onSuccess={(res) => {
+            console.log("Payment received, verifying...");
+            handlePaymentSuccess();
+           
+          }}
+          autoStart={true}
+        />
+        <Button
+          title="Pay Now"
+          onPress={() => paystackWebViewRef.current.startTransaction()}
+        />
+      </View>
+    </SafeAreaView>
+  );
+};
 
-export default Payment
-
-const styles = StyleSheet.create({})
-
-
-
-
-// import React, { useRef } from "react";
-// import {
-//   View,
-//   TouchableOpacity,
-//   Text,
-//   StyleSheet,
-//   TextInput,
-//   KeyboardAwareScrollView,
-// } from "react-native";
-// import { SafeAreaView } from "react-native-safe-area-context";
-// import { AnimatedView, COLORS, SIZES } from "../../constant/Theme";
-// import axios from "axios";
-// import { Paystack } from "react-native-paystack-webview";
-// import 
-
-// const Payment = () => {
-//   // const paystackWebViewRef = useRef(paystackProps.PayStackRef);
-
-//   // const [Loading, setLoading] = React.useState(false);
-
-//   // const [paymentDetails, setPaymentDetails] = React.useState({
-//   //   amount: 5000,
-//   //   email: 'aloziev50@gmail.com',
-//   //   orderId: '123456', // An example order ID
-//   // });
-
-//   // const initiatePayment = async () => {
-//   //   console.log('Start');
-//   //   try {
-//   //     // Send a request to the Node.js server to initiate the payment
-//   //     const response = await axios.post(
-//   //       'http://localhost:4005/api/payment',
-//   //       paymentDetails
-//   //     );
-
-//   //     // Retrieve the payment authorization URL from the server response
-//   //     const { authorization_url } = response.data;
-
-//   //     // Update the payment details and open the Paystack payment page within the WebView
-//   //     setPaymentDetails({ ...paymentDetails, initiated: true });
-//   //     setAuthorizationUrl(authorization_url);
-//   //   } catch (error) {
-//   //     console.log(error);
-//   //     console.error('Error initiating payment:', error);
-//   //   }
-//   // };
-
-//   // const handlePaymentCompletion = (event) => {
-//   //   // Handle the payment completion within the WebView component
-//   //   const { url } = event.nativeEvent;
-
-//   //   if (url.includes('payment_success')) {
-//   //     // Payment success handling
-//   //     // Send a request to the Node.js server to verify the payment
-//   //     verifyPayment();
-//   //   } else if (url.includes('payment_failure')) {
-//   //     // Payment failure handling
-//   //   }
-//   // };
-
-//   // const verifyPayment = async () => {
-//   //   try {
-//   //     // Send a request to the Node.js server to verify the payment
-//   //     await axios.post('http://localhost:4005/api/payment/verify', {
-//   //       Id: paymentDetails._Id,
-//   //     });
-//   //   } catch (error) {
-//   //     console.error('Error verifying payment:', error);
-//   //   }
-//   // };
-
-//   return (
-//     <SafeAreaView
-//       style={{
-//         backgroundColor: "#fafafa",
-//         flex: 1,
-//         paddingHorizontal: 20,
-//       }}
-//     >
-//       // <View style={{ flex: 1 }}>
-//       //   <Paystack
-//       //     paystackKey=""
-//       //     amount={"2000.00"}
-//       //     billingEmail="aloziev50@gmail.com"
-//       //     activityIndicatorColor="green"
-//       //     onCancel={(e) => {
-//       //       // handle response here
-//       //     }}
-//       //     onSuccess={(res) => {
-//       //       // handle response here
-//       //     }}
-//       //     autoStart={true}
-//       //   />
-//       // </View>
-
-//     </SafeAreaView>
-//   );
-// };
-
-// export default Payment;
-
-// const styles = StyleSheet.create({
-//   btnCont: {
-//     height: 55,
-//     width: "100%",
-//     backgroundColor: "#6c63ff",
-//     justifyContent: "center",
-//     alignItems: "center",
-//     borderRadius: 10,
-//     marginTop: 30,
-//     fontWeight: "500",
-//   },
-// });
+export default Payment;

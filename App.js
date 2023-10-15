@@ -1,7 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { Text, View } from "react-native";
-import { styled } from "nativewind";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import ChangePassword from "./screens/Auth/ChangePassword";
@@ -28,10 +27,7 @@ import {
   MaterialIcons,
   AntDesign,
 } from "@expo/vector-icons";
-import {
-  BottomSheetModalProvider,
-  BottomSheetBackdrop,
-} from "@gorhom/bottom-sheet";
+import { OrderProvider } from "./component/sub-component/OrderContext";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -39,31 +35,27 @@ const Tab = createBottomTabNavigator();
 export default function App() {
   return (
     <SafeAreaProvider>
-      <BottomSheetModalProvider>
+      <OrderProvider>
         <AlertNotificationRoot>
           <NavigationContainer>
             <Stack.Navigator
-              initialRouteName="Register"
+              initialRouteName="Tab"
               screenOptions={{
                 header: () => null,
               }}
             >
               <Stack.Screen name="Onboard" component={Onboard} />
-              <Stack.Screen name="Login" component={Login} />
-              <Stack.Screen
-                name="Register"
-                component={Register}
-                options={{ presentation: "card" }}
-              />
-              <Stack.Screen name="ForgotPass" component={ForgotPass} />
-              <Stack.Screen name="ChangePassword" component={ChangePassword} />
+              <Stack.Screen name="Login" component={Login} options={{ presentation: "card" }}/>
+              <Stack.Screen name="Register" component={Register} options={{ presentation: "card" }}/>
+              <Stack.Screen name="ForgotPass" component={ForgotPass} options={{ presentation: "card" }}/>
+              <Stack.Screen name="ChangePassword" component={ChangePassword} options={{ presentation: "card" }}/>
               <Stack.Screen name="ProfileNav" component={ProfileNav} />
               <Stack.Screen name="CreateDelivery" component={CreateDelivery} />
               <Stack.Screen name="Tab" component={TabBar} />
             </Stack.Navigator>
           </NavigationContainer>
         </AlertNotificationRoot>
-      </BottomSheetModalProvider>
+      </OrderProvider>
     </SafeAreaProvider>
   );
 }
@@ -75,11 +67,7 @@ function TabBar() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          // marginVertical: 5,
-          // marginHorizontal: 15,
-          // borderRadius: 30,
-          // elevation: 10,
-          // paddingVertical: 5,
+
         },
         tabBarActiveTintColor: "#6c63ff",
         tabBarInactiveTintColor: "gray",
@@ -129,20 +117,6 @@ function TabBar() {
           ),
         }}
         component={OrderNav}
-      />
-
-      <Tab.Screen
-        name="Profile"
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <FontAwesome5
-              name="user-circle"
-              size={focused ? 26 : 23}
-              color={focused ? "#6c63ff" : "gray"}
-            />
-          ),
-        }}
-        component={ProfileNav}
       />
     </Tab.Navigator>
   );

@@ -7,135 +7,203 @@ import {
   TextInput,
   Keyboard,
 } from "react-native";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   SafeAreaView,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
-import BottomSheet, {
-  BottomSheetView,
-  BottomSheetBackdropProps,
-} from "@gorhom/bottom-sheet";
-import PhotoBottomSheet from "../../component/PhotoBottomSheet";
-import * as ImagePicker from "expo-image-picker";
 import { AnimatedView, COLORS, SIZES } from "../../constant/Theme";
 import Loader from "../../component/form/Loader";
 import Input from "../../component/form/Input";
 import Button from "../../component/Button";
+import { ALERT_TYPE, Dialog, Toast } from "react-native-alert-notification";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 const Edit = ({ navigation }) => {
-  const [profileImage, setProfileImage] = React.useState("");
+  // const [profileImage, setProfileImage] = React.useState("");
   const [errors, setErrors] = React.useState({});
-  const [loading, setLoading] = React.useState(false);
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [inputs, setInputs] = React.useState({
-    Name: "",
+    name: "",
     address: "",
     email: "",
     number: "",
+    state: ""
   });
 
-  const LunchCamera = async () => {
-    let { status } = await ImagePicker.requestCameraPermissionsAsync();
-    if (status !== "granted") {
-      alert("Sorry we need camera roll permission to make this work");
-      console.log("canceled");
-    }
-
-    if (status === "granted") {
-      const response = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-      });
-
-      if (!response.canceled) {
-        setProfileImage(response.assets[0].uri);
-        // console.log(response.assets[0].uri);
-      }
-    }
-
-    console.log("Camera");
-    setIsOpen(false);
-  };
-
-  const LunchGallary = async () => {
-    let { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      alert("Sorry we need camera roll permission to make this work");
-      console.log("canceled");
-    }
-
-    if (status === "granted") {
-      const response = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: false,
-      });
-
-      if (!response.canceled) {
-        setProfileImage(response.assets[0].uri);
-        // console.log(response.assets[0].uri);
-      }
-    }
-    console.log("Gallary");
-    setIsOpen(false);
-  };
-
-  const HandleEdit = () => {
+  const HandleEdit = async () => {
     Keyboard.dismiss();
     let valid = true;
-    let mobileNumberPattern = /^[0-9]{10}$/;
-
-    if (!inputs.firstName) {
-      handleError("FirstName is required", "firstName");
+    let mobileNumberPattern = /^[0-9]{11}$/;
+  
+    if (!inputs.name) {
+      handleError("Name is required", "name");
       valid = false;
-    } else if (inputs.firstName.length <= 3) {
-      handleError("FirstName to short", "firstName");
-    }
-
-    if (!inputs.lastName) {
-      handleError("LastName is required", "lastName");
+    } else if (inputs.name.length < 4) {
+      handleError("Name is too short", "name");
       valid = false;
-    } else if (inputs.lastName.length <= 3) {
-      handleError("FirstName to short", "lastName");
     }
-
+  
     if (!inputs.email) {
       handleError("Email is required", "email");
       valid = false;
     } else if (!inputs.email.match(/\S+@\S+\.\S+/)) {
       handleError("Invalid email address", "email");
+      valid = false;
     }
-
+  
+    if (!inputs.address) {
+      handleError("Address is required", "address");
+      valid = false;
+    } else if (inputs.address.length < 6) {
+      handleError("Address is too short", "address");
+      valid = false;
+    }
+  
+    if (!inputs.state) {
+      handleError("State is required", "state");
+      valid = false;
+    } else if (inputs.state.length < 3) {
+      handleError("Invalid state", "state");
+      valid = false;
+    }
+  
     if (!inputs.number) {
       handleError("Mobile Number is required", "number");
       valid = false;
-    } else if (inputs.number.length < 11) {
+    } else if (inputs.number.length !== 11) {
       handleError("Invalid mobile number", "number");
-    } else if (inputs.number.length > 11) {
+      valid = false;
+    } else if (!mobileNumberPattern.test(inputs.number)) {
       handleError("Invalid mobile number", "number");
-    } else if (mobileNumberPattern.test(inputs.number)) {
-      handleError("Invalid email address", "email");
+      valid = false;
     }
-
+  
     if (valid) {
-      EditUserInput();
-    }
-
-    console.log("clicking.....");
-    // navigation.navigate('Tab');
-  };
-
-  const EditUserInput = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-
+      const id = JSON.parse(await AsyncStorage.getItem("userID"));
+      console.log(id);
       try {
-      } catch {
-        Alert.alert("Error", "Something went wrong.");
+        setLoading(true);
+        const body = { ...inputs };
+  
+        const response = await axios.put(
+          `https://sendit-bcknd.onrender.com/api/EditUserDetails/${id}`,
+          body
+        );
+  
+        if (response && response.data) {
+          if (response.data.error === true) {
+            Toast.show({
+              type: ALERT_TYPE.DANGER,
+              title: "Failed",
+              textBody: response.data.message,
+            });
+          } else if (response.data.error === false) {
+            Toast.show({
+              type: ALERT_TYPE.SUCCESS,
+              title: "Success",
+              textBody: response.data.message,
+            });
+            console.log(response.data)
+          }
+        }
+      } catch (error) {
+        console.log(error);
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: "Failed",
+          textBody: 'Something went wrong. Please check your internet connection.',
+        });
+      } finally {
+        setLoading(false);
       }
-    }, 5000);
+    }
   };
+
+  const FetchData = async () => {
+
+    const id = JSON.parse(await AsyncStorage.getItem("userID"));
+    console.log(id);
+
+    try {
+      if (id) {
+        axios
+          .get(`https://sendit-bcknd.onrender.com/api/getUserDetails/${id}`)
+          .then((response) => {
+            // console.log(response.data);
+            if (response.data.error === true) {
+              console.error("Error fetching user data:", response.data.message); // Log the error message from the response
+              Dialog.show({
+                type: ALERT_TYPE.DANGER,
+                title: "Error",
+                textBody:
+                  "An error occurred. Please check your internet connection!",
+                actions: [
+                  {
+                    text: "OK",
+                    onPress: () => {
+                      Dialog.hide();
+                    },
+                  },
+                ],
+              });
+            } else {
+              setUserData(response.data);
+              // console.log(response.data);
+              setInputs({
+                name: response.data.user.name || "", // Use the appropriate field from the response
+                address: response.data.user.address || "",
+                email: response.data.user.email || "",
+                number: response.data.user.number || "",
+                state: response.data.user.state || "",
+              });
+              
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching user data:", error); // Log the error here
+            Dialog.show({
+              type: ALERT_TYPE.DANGER,
+              title: "Error",
+              textBody: "Please check your internet connection!",
+              actions: [
+                {
+                  text: "OK",
+                  onPress: () => {
+                    Dialog.hide();
+                  },
+                },
+              ],
+            });
+          });
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      Dialog.show({
+        type: ALERT_TYPE.DANGER,
+        title: "Error",
+        textBody: "An error occurred. Please check your internet connection!",
+        actions: [
+          {
+            text: "OK",
+            onPress: () => {
+              Dialog.hide();
+            },
+          },
+        ],
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    FetchData();
+  }, []);
+
 
   const handleOnchange = (text, input) => {
     setInputs((prevState) => ({ ...prevState, [input]: text }));
@@ -154,6 +222,7 @@ const Edit = ({ navigation }) => {
         paddingHorizontal: 20,
       }}
     >
+      <Loader visible={loading}/>
       <View>
         <View
           style={{
@@ -183,36 +252,11 @@ const Edit = ({ navigation }) => {
             {/* Track */}
           </Text>
         </View>
-        <View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-              padding: 15,
-            }}
-          >
-            {profileImage ? (
-              <Image
-                source={{ uri: profileImage }}
-                style={{ width: 110, height: 110, borderRadius: 50 }}
-                resizeMode="cover"
-              />
-            ) : (
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={LunchGallary}
-                style={{}}
-              >
-                <Image
-                  style={{ width: 110, height: 110, borderRadius: 50 }}
-                  source={require("../../assets/card.png")}
-                  resizeMode="cover"
-                />
-              </TouchableOpacity>
-            )}
-          </View>
-
+        <View
+          style={{
+            paddingTop: 20,
+          }}
+        >
           <View
             style={{
               // borderWidth:1,
@@ -220,16 +264,17 @@ const Edit = ({ navigation }) => {
             }}
           >
             <Input
-              placeholder="First Name"
-              label="First Name:"
+              placeholder="Enter your name"
+              label="Name:"
               name
               password={undefined}
               keyboardType="default"
-              error={errors.firstName}
+              error={errors.name}
+              value={inputs.name || userData?.name}
               onFocus={() => {
-                handleError(null, "firstName");
+                handleError(null, "name");
               }}
-              onChangeText={(text) => handleOnchange(text, "firstName")}
+              onChangeText={(text) => handleOnchange(text, "name")}
             />
 
             <Input
@@ -238,11 +283,26 @@ const Edit = ({ navigation }) => {
               name
               password={undefined}
               keyboardType="default"
-              error={errors.addess}
+              error={errors.address}
+              value={inputs.address}
               onFocus={() => {
-                handleError(null, "addess");
+                handleError(null, "address");
               }}
-              onChangeText={(text) => handleOnchange(text, "addess")}
+              onChangeText={(text) => handleOnchange(text, "address")}
+            />
+
+            <Input
+              placeholder="Enter your state"
+              label="State:"
+              name
+              password={undefined}
+              keyboardType="default"
+              error={errors.state}
+              value={inputs.state}
+              onFocus={() => {
+                handleError(null, "state");
+              }}
+              onChangeText={(text) => handleOnchange(text, "state")}
             />
 
             <Input
@@ -252,6 +312,7 @@ const Edit = ({ navigation }) => {
               password={undefined}
               keyboardType="email-address"
               error={errors.email}
+              value={inputs.email}
               onFocus={() => {
                 handleError(null, "email");
               }}
@@ -265,6 +326,7 @@ const Edit = ({ navigation }) => {
               password={undefined}
               keyboardType="number-pad"
               error={errors.number}
+              value={inputs.number}
               onFocus={() => {
                 handleError(null, "number");
               }}

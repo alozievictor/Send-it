@@ -22,7 +22,7 @@ const Onboard = ({ navigation }) => {
           />
           <View style={styles.textcont}>
             <Text style={styles.firstText}>Fastest Delivery</Text>
-            <Text style={styles.secondText}>EsayTrip a fast, Reliable logistics services solution for all kind of parcels</Text>
+            <Text style={styles.secondText}>EsayTrip a fast, Reliable logistics services solution for all kind of parcels.....</Text>
           </View>
         </View>
         <View style={styles.btncont}>

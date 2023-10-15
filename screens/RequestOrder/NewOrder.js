@@ -12,91 +12,39 @@ import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather, EvilIcons } from "@expo/vector-icons";
 import { AnimatedView, COLORS, SIZES } from "../../constant/Theme";
-import BottomSheet, {
-  BottomSheetModal,
-  BottomSheetModalProvider,
-  BottomSheetBackdrop,
-  BottomSheetView,
-  BottomSheetBackdropProps,
-} from "@gorhom/bottom-sheet";
-import PhotoBottomSheet from "../../component/PhotoBottomSheet";
-import { useNavigation } from "@react-navigation/native";
-import * as ImagePicker from "expo-image-picker";
 import Input from "../../component/form/Input";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Button from "../../component/Button";
+import {
+  useOrderState,
+  useOrderDispatch,
+} from "../../component/sub-component/OrderContext";
 
-const NewOrder = () => {
-  const navigation = useNavigation();
-
-  const [isOpen, setIsOpen] = React.useState(false);
-  const bottomSheetRef = React.useRef(null);
-  const snapPoints = ["40%"];
-  const [profileImage, setProfileImage] = React.useState("");
+const NewOrder = ({ navigation }) => {
+  const state = useOrderState();
+  const orderDispatch = useOrderDispatch();
 
   const [errors, setErrors] = React.useState({});
   const [loading, setLoading] = React.useState(false);
   const [inputs, setInputs] = React.useState({
-    packageNumber: "",
     packageName: "",
     name: "",
+    email: "",
     address: "",
     city: "",
     number: "",
   });
 
-  // const LunchCamera = async () => {
-  //   let { status } = await ImagePicker.requestCameraPermissionsAsync();
-  //   if (status !== "granted") {
-  //     alert("Sorry we need camera roll permission to make this work");
-  //     console.log("canceled");
-  //   }
-
-  //   if (status === "granted") {
-  //     const response = await ImagePicker.launchCameraAsync({
-  //       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-  //       allowsEditing: true,
-  //     });
-
-  //     if (!response.canceled) {
-  //       setProfileImage(response.assets[0].uri);
-  //       // console.log(response.assets[0].uri);
-  //     }
-  //   }
-
-  //   console.log("Camera");
-  //   setIsOpen(false);
-  // };
-
-  // const LunchGallary = async () => {
-  //   let { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  //   if (status !== "granted") {
-  //     alert("Sorry we need camera roll permission to make this work");
-  //     console.log("canceled");
-  //   }
-
-  //   if (status === "granted") {
-  //     const response = await ImagePicker.launchImageLibraryAsync({
-  //       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-  //       allowsEditing: true,
-  //     });
-
-  //     if (!response.canceled) {
-  //       setProfileImage(response.assets[0].uri);
-  //       // console.log(response.assets[0].uri);
-  //     }
-  //   }
-  //   console.log("Gallary");
-  //   setIsOpen(false);
-  // };
-
-  const handleSenderDetails = () => {
+  const handleSenderDetails = async () => {
     Keyboard.dismiss();
     let valid = true;
-    let mobileNumberPattern = /^[0-9]{10}$/;
+    let mobileNumberPattern = /^[0-9]{11}$/;
 
-    if (!inputs.packageNumber) {
-      handleError("Number of package is required", "packageNumber");
+    if (!inputs.email) {
+      handleError("Email is required", "email");
+      valid = false;
+    } else if (!inputs.email.match(/\S+@\S+\.\S+/)) {
+      handleError("Invalid email address", "email");
       valid = false;
     }
 
@@ -141,33 +89,28 @@ const NewOrder = () => {
     } else if (inputs.number.length > 11) {
       handleError("Invalid mobile number", "number");
       valid = false;
-    } else if (mobileNumberPattern.test(inputs.number)) {
-      handleError("Invalid email address", "email");
+    } else if (!mobileNumberPattern.test(inputs.number)) {
+      handleError("Invalid mobile number", "number");
       valid = false;
     }
 
     if (valid) {
+      console.log("all inputs are valid");
+
+      const senderData = {
+        packageName: inputs.packageName,
+        name: inputs.name,
+        email: inputs.email,
+        address: inputs.address,
+        city: inputs.city,
+        number: inputs.number,
+      };
+
+      orderDispatch({ type: "SET_SENDER_DETAILS", payload: senderData });
+
+      console.log("Global State:", state);
       navigation.navigate("Recieve");
-      RegisterUser();
     }
-
-    console.log("clicking.....");
-
-    console.log(profileImage);
-    navigation.navigate("Recieve");
-  };
-
-  const RegisterUser = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-
-      try {
-        // see how to validate image, also pass input to another screen payment also.
-      } catch {
-        Alert.alert("Error", "Something went wrong.");
-      }
-    }, 5000);
   };
 
   const handleOnchange = (text, input) => {
@@ -243,24 +186,11 @@ const NewOrder = () => {
               name
               password={undefined}
               keyboardType="default"
-              error={errors.packageNumber}
+              error={errors.packageName}
               onFocus={() => {
-                handleError(null, "packageNumber");
+                handleError(null, "packageName");
               }}
-              onChangeText={(text) => handleOnchange(text, "packageNumber")}
-            />
-
-            <Input
-              placeholder="Enter number of package"
-              label="Package Number:"
-              name
-              password={undefined}
-              keyboardType="default"
-              error={errors.packageNumber}
-              onFocus={() => {
-                handleError(null, "packageNumber");
-              }}
-              onChangeText={(text) => handleOnchange(text, "packageNumber")}
+              onChangeText={(text) => handleOnchange(text, "packageName")}
             />
 
             <Input
@@ -274,6 +204,19 @@ const NewOrder = () => {
                 handleError(null, "name");
               }}
               onChangeText={(text) => handleOnchange(text, "name")}
+            />
+
+            <Input
+              placeholder="Enter your email address"
+              label="Email:"
+              name
+              password={undefined}
+              keyboardType="email-address"
+              error={errors.email}
+              onFocus={() => {
+                handleError(null, "email");
+              }}
+              onChangeText={(text) => handleOnchange(text, "email")}
             />
 
             <Input
@@ -316,20 +259,8 @@ const NewOrder = () => {
             />
           </View>
           <Button title="Proceed" onPress={handleSenderDetails} />
-          {/* <TouchableOpacity
-            activeOpacity={0.9}
-            style={styles.btnCont}
-            onPress={handleSenderDetails}
-          >
-            <Text
-              style={{ fontSize: 18, fontWeight: "500", color: COLORS.white }}
-            >
-              Proceed
-            </Text>
-          </TouchableOpacity> */}
         </View>
       </ScrollView>
-
     </SafeAreaView>
   );
 };
@@ -379,4 +310,3 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
   },
 });
-

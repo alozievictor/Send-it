@@ -61,13 +61,13 @@ export default Input;
 
 const styles = StyleSheet.create({
   label: {
-    fontSize: 16,
+    fontSize: 15,
     color: "#363636",
     fontWeight: "500",
   },
   inputCont: {
     width: "100%",
-    height: 60,
+    height: 50,
     backgroundColor: "#fafafa",
     elevation: 1,
     borderWidth: 0.8,
