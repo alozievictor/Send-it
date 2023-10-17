@@ -64,15 +64,14 @@ const Checkout = ({ navigation }) => {
         setLoading(false);
       } else {
         console.error("Invalid sender address or no results found");
-        // Handle the error here
       }
     } catch (error) {
-      console.error("Error calculating distance:", error);
+      console.error(`Error calculating distance:, ${error}`);
     }
   };
 
   const distanceBetween = (lat1, lon1, lat2, lon2) => {
-    const R = 6371; // Radius of the Earth in kilometers
+    const R = 6371; 
     const dLat = deg2rad(lat2 - lat1);
     const dLon = deg2rad(lon2 - lon1);
     const a =
