@@ -121,7 +121,7 @@ const Profile = ({navigation}) => {
         <View style={{ flexDirection:'row', alignItems:'center', padding:25, borderRadius: 5, elevation:2, backgroundColor: "#fff", marginTop:20 }}>
           {userData && (
             <View style={{paddingHorizontal:20}}>
-             <Text style={{fontSize:18, fontWeight:'500', color:''}}>{userData.user.name}</Text>
+             <Text style={{fontSize:18, fontWeight:'500', }}>{userData.user.name}</Text>
              <Text style={{fontSize:15, fontWeight:'500', color:COLORS.small}}>{userData.user.email}</Text>
            </View>
           )}

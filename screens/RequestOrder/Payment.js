@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { Paystack } from "react-native-paystack-webview";
 import Button from "../../component/Button";
@@ -9,13 +9,14 @@ import { useOrderState } from "../../component/sub-component/OrderContext";
 import { ALERT_TYPE, Dialog, Toast } from "react-native-alert-notification";
 
 
-const Payment = ({ route }) => {
+const Payment = ({navigation, route }) => {
   const { senderEmail, senderName, senderNumber, price, } = route.params;
 
   const paystackWebViewRef = useRef();
 
-  const priceInKobo = (Math.round(price * 100) / 10).toFixed(1)
+  const priceInKobo = (Math.round(price) / 10).toFixed(1)*100
 
+  const [paymentReference, setpaymentReference] = useState('')
   const handlePaymentSuccess = async () => {
     try {
       const response = await axios.post("https://sendit-bcknd.onrender.com/api/payment/verify", {
@@ -70,6 +71,8 @@ const Payment = ({ route }) => {
           activityIndicatorColor="green"
           onCancel={(e) => {
             console.log("Opps payment failed");
+            navigation.pop()
+            Toast.show({title:"Payment Closed", type:ALERT_TYPE.WARNING})
           }}
           onSuccess={(res) => {
             console.log("Payment received, verifying...");

@@ -230,8 +230,9 @@ const Dashboard = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-    FetchData();
-  }, []);
+    let sub= navigation.addListener('focus',FetchData)
+    return sub
+  }, [navigation]);
 
   const NavigateToProfile = () => {
     console.log("first Func");

@@ -169,6 +169,8 @@ export default function Register({ route, navigation }) {
       <Loader visible={loading} />
       <AnimatedView animation={"fadeInUp"} duration={1000} delay={600}>
         <ScrollView
+        showsVerticalScrollIndicator={false}
+        
           style={{
             width: "100%",
             paddingTop: 10,

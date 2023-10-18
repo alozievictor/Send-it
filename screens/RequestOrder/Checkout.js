@@ -142,7 +142,7 @@ const Checkout = ({ navigation }) => {
       <View style={styles.content}>
         <View style={styles.titleCont}>
           <Text style={styles.subtitle}>Sender Details:</Text>
-          <Text style={styles.title}>NAME: {senderDetails.name}</Text>
+          <Text style={styles.title}>Name: {senderDetails.name}</Text>
           <Text style={styles.title}>Email: {senderDetails.email}</Text>
           <Text style={styles.title}>Number: {receiverDetails.number}</Text>
         </View>
