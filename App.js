@@ -36,7 +36,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <OrderProvider>
-        <AlertNotificationRoot>
+        <AlertNotificationRoot theme="dark">
           <NavigationContainer>
             <Stack.Navigator
               initialRouteName="Tab"
