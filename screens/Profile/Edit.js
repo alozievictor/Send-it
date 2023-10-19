@@ -347,12 +347,6 @@ const styles = StyleSheet.create({
   input: {
     height: 55,
     backgroundColor: "#fafafa",
-    // shadowColor: "#000",
-    // shadowOffset: { width: 0, height: 1 },
-    // shadowOpacity: 0.5,
-    // shadowRadius: 4,
-    // elevation: 1,
-    // borderWidth: 0.8,
     borderColor: "#ddd",
     borderRadius: 10,
     marginVertical: 5,
