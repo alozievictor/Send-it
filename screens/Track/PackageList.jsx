@@ -4,8 +4,17 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import ProductRow from "./ProductRow";
 import { Feather } from "@expo/vector-icons";
 import { AnimatedView, COLORS, SIZES } from "../../constant/Theme";
+import UseFetch from "../../component/sub-component/UseFetch";
+
 
 const PackageList = ({ navigation }) => {
+
+  const { Refresh } = UseFetch(); // Access the Refresh function directly
+
+  const handleRefresh = () => {
+   Refresh(); 
+  };
+
   return (
     <SafeAreaView
     style={{
@@ -36,9 +45,18 @@ const PackageList = ({ navigation }) => {
           <Text style={{ paddingLeft: 10, fontSize: 18, fontWeight: "500" }}>
             Packages
           </Text>
-          <Text style={{ paddingLeft: 10, fontSize: 20, fontWeight: "500" }}>
-            {/* Track */}
-          </Text>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={handleRefresh}
+            style={{
+              borderRadius: 50,
+              padding: 2,
+              marginVertical: 3,
+            }}
+          >
+            <Feather name="refresh-ccw" size={26} color="black" />
+          </TouchableOpacity>
+
         </View>
         <ProductRow />
       </AnimatedView>

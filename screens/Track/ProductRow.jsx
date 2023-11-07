@@ -5,8 +5,9 @@ import UseFetch from "../../component/sub-component/UseFetch";
 import Loader from "../../component/form/Loader";
 import { AnimatedView, COLORS, SIZES } from "../../constant/Theme";
 
+
 const ProductRow = () => {
-  const { data, loading, error } = UseFetch();
+  const { data, loading, error, Refresh } = UseFetch();
   console.log("FETCHED DATA:", data);
   console.log("FETCHED...:", data.package);
 

@@ -45,20 +45,60 @@ const Tracker = ({ item }) => {
           resizeMode="cover"
         />
 
-        <View style={{width:"80%"}}>
-        <Text
-            style={{
-              paddingHorizontal: 5,
-              fontWeight: "400",
-              marginVertical: 3,
-            }}
-          >
-            PackageID:
-            <Text style={{ paddingHorizontal: 5, fontWeight: "500", fontSize:17 }}>{item.packageNumber}</Text>
-          </Text>
-          <Text style={{ paddingHorizontal: 5, fontWeight: "400" }}>
-            Package Name: <Text style={{ paddingHorizontal: 5, fontWeight: "500", fontSize:17 }}>{item.packageName}</Text>
-          </Text>
+        <View style={{ width: "80%" }}>
+          <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
+            <View>
+              <Text
+                style={{
+                  paddingHorizontal: 5,
+                  fontWeight: "400",
+                  marginVertical: 3,
+                }}
+              >
+                PackageID:
+                <Text
+                  style={{
+                    paddingHorizontal: 5,
+                    fontWeight: "500",
+                    fontSize: 17,
+                  }}
+                >
+                  {item.packageNumber}
+                </Text>
+              </Text>
+              <Text style={{ paddingHorizontal: 5, fontWeight: "400" }}>
+                Package Name:{" "}
+                <Text
+                  style={{
+                    paddingHorizontal: 5,
+                    fontWeight: "500",
+                    fontSize: 17,
+                  }}
+                >
+                  {item.packageName}
+                </Text>
+              </Text>
+            </View>
+            <View
+              style={{
+                paddingHorizontal: 15,
+                paddingVertical: 9,
+                borderRadius: 50,
+                backgroundColor: "#6c63ff",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  color: COLORS.white,
+                  textAlign: "center",
+                  fontSize:17
+                }}
+              >
+                {item.status}
+              </Text>
+            </View>
+          </View>
 
           <TouchableOpacity
             onPress={() => navigation.navigate("PackageDetails", { item })}
