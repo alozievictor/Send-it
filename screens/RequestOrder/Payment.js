@@ -41,7 +41,6 @@ const Payment = ({navigation, route }) => {
       }
       console.log("User Payload:", input);
       setloading(true)
-      // integrating the api 
       const response = await axios({
         url:`https://sendit-bcknd.onrender.com/api/verify-payment/${paymenRef}`,
         method:'post',
@@ -54,15 +53,6 @@ const Payment = ({navigation, route }) => {
 
       // getting data
       const { status } = response;  
-        
-        //show user message
-        // Dialog.show({
-        //   type:ALERT_TYPE.SUCCESS,
-        //   title:'Payment Successful',
-        //   textBody:'Your delivery ride will be on its way to you.'
-        // })
-        //take them back to home page
-        // navigation.popToTop()
 
         
       navigation.navigate("Success")
@@ -71,14 +61,6 @@ const Payment = ({navigation, route }) => {
         return;
     } catch (error) {
       console.log("Error verifying payment:", error);
-      // Toast.show({
-      //   type: ALERT_TYPE.DANGER,
-      //   title: "Failed",
-      //   textBody: "An error occurred while verifying the payment.",
-      // });
-
-      //TAKE USER BACK ON ERROR
-      // navigation.pop()
       navigation.navigate("Error")
       return;
 
