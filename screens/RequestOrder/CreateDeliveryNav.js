@@ -5,12 +5,15 @@ import NewOrder from "./NewOrder";
 import ReDets from "./ReDets";
 import Payment from "./Payment";
 import Checkout from "./Checkout";
+import Success from "./Success";
+import Error from "./Error";
 
 const Stack = createNativeStackNavigator();
 
 const CreateDelivery = () => {
   return (
       <Stack.Navigator
+        // initialRouteName="Success"
         screenOptions={{
           header: () => null,
         }}
@@ -19,7 +22,9 @@ const CreateDelivery = () => {
         <Stack.Screen name="Recieve" component={ReDets}/>
         <Stack.Screen name="Checkout" component={Checkout}/>
         <Stack.Screen name="Payment" component={Payment}/>
-        
+        <Stack.Screen name="Success" component={Success}/>
+        <Stack.Screen name="Error" component={Error}/>
+
       </Stack.Navigator>
   );
 };

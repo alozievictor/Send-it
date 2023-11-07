@@ -174,7 +174,7 @@ const NewOrder = ({ navigation }) => {
             Sender Details.
           </Text>
           <Text style={{ fontSize: SIZES.h6, fontWeight: "400", opacity: 0.5 }}>
-            Filling in your details for pickup
+            Please enter address with landmark
           </Text>
         </View>
 

@@ -2,9 +2,10 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Tracker from './tracker';
+import PackageDetails from './PackageDetails';
+import PackageList from './PackageList';
 
 const Stack = createNativeStackNavigator();
-
 
 const TrackNav = () => {
   return (
@@ -13,9 +14,8 @@ const TrackNav = () => {
         header: ()=> null
       }}
     >
-      <Stack.Screen name='Tracker' component={Tracker}/>
-      {/* <Stack.Screen name='Prof' component={Prof}/>
-      <Stack.Screen name='DogProf' component={DogProf}/> */}
+      <Stack.Screen name='PackageList' component={PackageList}/>
+      <Stack.Screen name='PackageDetails' component={PackageDetails}/>
     </Stack.Navigator>
   )
 }

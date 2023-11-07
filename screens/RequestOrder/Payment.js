@@ -26,7 +26,7 @@ const Payment = ({navigation, route }) => {
   const handlePaymentSuccess = async (paymenRef) => {
     try {
       let input={
-        userId: await AsyncStorage.getItem('userID'),
+        userId: (await AsyncStorage.getItem('userID')).replace(/"/g, ''),
         packageName:senderDetails.packageName,
         senderName:senderDetails.name,
         senderAddress:senderDetails.address,
@@ -39,10 +39,11 @@ const Payment = ({navigation, route }) => {
         recieverNumber:receiverDetails.number,
         recieverEmail:receiverDetails.email,
       }
+      console.log("User Payload:", input);
       setloading(true)
       // integrating the api 
       const response = await axios({
-        url:`http://192.168.43.139:4000/api/verify-payment/${paymenRef}`,
+        url:`https://sendit-bcknd.onrender.com/api/verify-payment/${paymenRef}`,
         method:'post',
         headers:{
           Accept:'application/json',
@@ -52,37 +53,42 @@ const Payment = ({navigation, route }) => {
       });
 
       // getting data
-      const { status } = response;
-
-   
-        
+      const { status } = response;  
         
         //show user message
-        Dialog.show({
-          type:ALERT_TYPE.SUCCESS,
-          title:'Payment Successful',
-          textBody:'Your delivery ride will be on its way to you.'
-        })
+        // Dialog.show({
+        //   type:ALERT_TYPE.SUCCESS,
+        //   title:'Payment Successful',
+        //   textBody:'Your delivery ride will be on its way to you.'
+        // })
         //take them back to home page
-        navigation.popToTop()
+        // navigation.popToTop()
+
+        
+      navigation.navigate("Success")
+
 
         return;
     } catch (error) {
       console.log("Error verifying payment:", error);
-      Toast.show({
-        type: ALERT_TYPE.DANGER,
-        title: "Failed",
-        textBody: "An error occurred while verifying the payment.",
-      });
+      // Toast.show({
+      //   type: ALERT_TYPE.DANGER,
+      //   title: "Failed",
+      //   textBody: "An error occurred while verifying the payment.",
+      // });
 
       //TAKE USER BACK ON ERROR
-      navigation.pop()
+      // navigation.pop()
+      navigation.navigate("Error")
       return;
 
     }finally{
       setloading(false)
     }
   };
+
+  
+
 
   React.useEffect(()=> {
     console.log( priceInKobo);

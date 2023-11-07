@@ -148,23 +148,36 @@ const Profile = ({ navigation }) => {
           }}
         >
           {userData && (
-<<<<<<< HEAD
-            <View style={{paddingHorizontal:20}}>
-             <Text style={{fontSize:18, fontWeight:'500', }}>{userData.user.name}</Text>
-             <Text style={{fontSize:15, fontWeight:'500', color:COLORS.small}}>{userData.user.email}</Text>
-           </View>
-=======
-            <View style={{ paddingHorizontal: 20 }}>
-              <Text style={{ fontSize: 18, fontWeight: "500", color: "" }}>
-                {userData.user.name}
-              </Text>
-              <Text
-                style={{ fontSize: 15, fontWeight: "500", color: COLORS.small }}
-              >
-                {userData.user.email}
-              </Text>
-            </View>
->>>>>>> db8ca926 (changed)
+            <>
+              <View style={{ paddingHorizontal: 20 }}>
+                <Text style={{ fontSize: 18, fontWeight: "500" }}>
+                  {userData.user.name}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 15,
+                    fontWeight: "500",
+                    color: COLORS.small,
+                  }}
+                >
+                  {userData.user.email}
+                </Text>
+              </View>
+              <View style={{ paddingHorizontal: 20 }}>
+                <Text style={{ fontSize: 18, fontWeight: "500", color: "" }}>
+                  {userData.user.name}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 15,
+                    fontWeight: "500",
+                    color: COLORS.small,
+                  }}
+                >
+                  {userData.user.email}
+                </Text>
+              </View>
+            </>
           )}
         </View>
 

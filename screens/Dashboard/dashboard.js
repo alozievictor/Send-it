@@ -247,7 +247,6 @@ const Dashboard = ({ navigation, route }) => {
         backgroundColor: "#fafafa",
         flex: 1,
         paddingHorizontal: 20,
-        borderWidth: 2,
         padding: 0,
         width: "100%",
       }}
@@ -260,7 +259,7 @@ const Dashboard = ({ navigation, route }) => {
           <ActivityIndicator size="large" color="#6c63ff" />
         </SafeAreaView>
       ) : userData ? (
-        <View>
+        <View style={{ flex: 1,}}>
           <Header onPress={NavigateToProfile} userData={userData}/>
           <ScrollView showsVerticalScrollIndicator={false} style={{paddingVertical: 20}}>
             <View
@@ -287,7 +286,7 @@ const Dashboard = ({ navigation, route }) => {
               styl={{
                 borderWidth: 0.5,
                 borderColor: "#ccc",
-                paddingVertical: 3,
+                paddingVertical: 10,
               }}
             >
               <Text

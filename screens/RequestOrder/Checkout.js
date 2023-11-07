@@ -14,16 +14,17 @@ import axios from "axios";
 import { nanoid } from "nanoid";
 import { getRandomBase64 } from "react-native-get-random-values";
 import WebView from "react-native-webview";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 const Checkout = ({ navigation }) => {
   const { senderDetails, receiverDetails } = useOrderState();
-  const [distance, setDistance] = useState(null);
-  const [price, setPrice] = useState(null);
+  const [distance, setDistance] = React.useState(null);
+  const [price, setPrice] = React.useState(null);
   const senderEmail = senderDetails.email;
   const senderName = senderDetails.name;
   const senderNumber = senderDetails.number;
-  const [loading, setLoading] = useState(false);
-  const [paymentUrl, setPaymentUrl] = useState("");
+  const [loading, setLoading] = React.useState(false);
 
   useEffect(() => {
     calculateDistance();
@@ -104,13 +105,7 @@ const Checkout = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView
-      style={{
-        backgroundColor: "#fafafa",
-        flex: 1,
-        paddingHorizontal: 20,
-      }}
-    >
+    <SafeAreaView style={styles.container} >
       <View
         style={{
           flexDirection: "row",
@@ -169,7 +164,6 @@ const Checkout = ({ navigation }) => {
           <Text style={styles.title}>
             Total Amount: {price !== null ? `₦${price}` : "Calculating..."}{" "}
           </Text>
-          <Text style={styles.title}></Text>
         </View>
 
         {loading ? (
@@ -187,27 +181,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fafafa",
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
   },
   content: {
     width: "100%",
-    paddingVertical: 10,
-    marginVertical: 10,
     backgroundColor: "#fff",
-    height: "90%",
+    height: "100%",
     borderRadius: 5,
     elevation: 1,
     paddingHorizontal: 5,
   },
   subtitle: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: "500",
     paddingBottom: 5,
   },
   title: {
-    fontSize: 17,
+    fontSize: 15,
     fontWeight: "400",
     paddingVertical: 5,
+    // borderWidth:3
   },
   titleCont: {
     borderColor: "#bbb",

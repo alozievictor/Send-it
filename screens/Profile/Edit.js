@@ -200,7 +200,7 @@ const Edit = ({ navigation }) => {
     }
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     FetchData();
   }, []);
 

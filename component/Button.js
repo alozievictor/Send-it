@@ -13,7 +13,7 @@ export default Button;
 
 const styles = StyleSheet.create({
     btnCont: { 
-        height:55, 
+        height:45, 
         width:'100%', 
         backgroundColor:'#6c63ff',
         justifyContent:'center',
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
         marginTop:20
     },
     btnText: {
-        fontSize:18,
+        fontSize:17,
         fontWeight:'500',
         color:"white"
     }

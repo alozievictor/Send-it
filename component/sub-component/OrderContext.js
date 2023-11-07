@@ -1,13 +1,10 @@
-// OrderContext.js
 import React, { createContext, useContext, useReducer, useState } from 'react';
 
-// Define your initial state
 const initialState = {
   senderDetails: {},
   receiverDetails: {},
 };
 
-// Define your reducer function
 const orderReducer = (state, action) => {
   switch (action.type) {
     case 'SET_SENDER_DETAILS':
@@ -33,7 +30,6 @@ export const OrderProvider = ({ children }) => {
   );
 };
 
-// Custom hooks for using the context
 export const useOrderState = () => {
   const context = useContext(OrderContext);
   if (!context) {

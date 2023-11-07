@@ -148,8 +148,8 @@ const ReDets = ({ navigation }) => {
             alignItems: "center",
           }}
         >
-          <Text style={{ fontSize: SIZES.h1, fontWeight: "500" }}>
-            Receiver Details
+          <Text style={{ fontSize: SIZES.h4, fontWeight: "400", opacity: 0.5 }}>
+            Please enter address with landmark
           </Text>
         </View>
 

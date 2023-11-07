@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   },
   inputCont: {
     width: "100%",
-    height: 50,
+    height: 52,
     backgroundColor: "#fafafa",
     elevation: 1,
     borderWidth: 0.8,
