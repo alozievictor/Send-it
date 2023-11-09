@@ -20,7 +20,6 @@ import Input from "../../component/form/Input";
 import Button from "../../component/Button";
 import { Ionicons } from "@expo/vector-icons";
 import { AnimatedView, COLORS, SIZES } from "../../constant/Theme";
-import { useRouter } from "expo-router";
 // import Register from "./Register";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import FormSelectedBtn from "../../component/formSelectedBtn";
