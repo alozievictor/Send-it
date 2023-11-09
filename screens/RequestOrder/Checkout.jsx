@@ -6,16 +6,11 @@ import {
   View,
   ScrollView,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
 import Button from "../../component/Button";
 import axios from "axios";
-import { nanoid } from "nanoid";
-import { getRandomBase64 } from "react-native-get-random-values";
-import WebView from "react-native-webview";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
 
 const Checkout = ({ navigation }) => {
   const { senderDetails, receiverDetails } = useOrderState();
