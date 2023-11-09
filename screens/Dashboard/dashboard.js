@@ -276,8 +276,8 @@ const Dashboard = ({ navigation, route }) => {
             </View>
             <View style={{ paddingVertical: 20 }}>
               <Image
-                style={{ width: "100%", height: 0.2 * windowHeight, borderRadius: 8 }}
-                source={require("../../assets/card.png")}
+                style={{ width: "100%", height: 0.23 * windowHeight, borderRadius: 8 }}
+                source={require("../../assets/image.png")}
                 resizeMode="cover"
               />
             </View>

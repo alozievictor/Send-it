@@ -28,6 +28,11 @@ const Profile = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const Logout = async () => {
+    await AsyncStorage.clear();
+    navigation.navigate("Login")
+  }
+
   const FetchData = async () => {
     const id = JSON.parse(await AsyncStorage.getItem("userID"));
     console.log(id);
@@ -149,8 +154,8 @@ const Profile = ({ navigation }) => {
         >
           {userData && (
             <>
-              <View style={{ paddingHorizontal: 20 }}>
-                <Text style={{ fontSize: 18, fontWeight: "500" }}>
+              <View style={{ paddingHorizontal: 20, justifyContent:"center", alignItems:"center",  }}>
+                <Text style={{ fontSize: 18, fontWeight: "500", textAlign:'center' }}>
                   {userData.user.name}
                 </Text>
                 <Text
@@ -158,20 +163,7 @@ const Profile = ({ navigation }) => {
                     fontSize: 15,
                     fontWeight: "500",
                     color: COLORS.small,
-                  }}
-                >
-                  {userData.user.email}
-                </Text>
-              </View>
-              <View style={{ paddingHorizontal: 20 }}>
-                <Text style={{ fontSize: 18, fontWeight: "500", color: "" }}>
-                  {userData.user.name}
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 15,
-                    fontWeight: "500",
-                    color: COLORS.small,
+                    textAlign:'center'
                   }}
                 >
                   {userData.user.email}
@@ -438,7 +430,7 @@ const Profile = ({ navigation }) => {
         <View style={styles.btnDiv}>
           <Button
             title="Log out"
-            onPress={() => navigation.navigate("Login")}
+            onPress={Logout}
           />
         </View>
       </View>
