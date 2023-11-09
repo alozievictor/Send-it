@@ -10,13 +10,9 @@ import {
     Animated,
   } from "react-native";
   import * as Animatable from "react-native-animatable";
-//   import Colors from "../constants/Colors";
   import { useTheme } from "react-native-paper";
   import { AntDesign, Ionicons, MaterialIcons } from "@expo/vector-icons";
-//   import { Shadow, ShadowProps } from "react-native-shadow-2";
   import { JSXElementConstructor, useState } from "react";
-  import { useRouter } from "expo-router";
-//   import { Main } from "../styles/land";
   import React from "react";
 
 
