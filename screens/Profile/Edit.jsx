@@ -224,34 +224,34 @@ const Edit = ({ navigation }) => {
     >
       <Loader visible={loading}/>
       <View>
-        <View
+
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: 15,
+          paddingVertical: 3,
+        }}
+      >
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => navigation.goBack()}
           style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginBottom: 15,
-            paddingVertical: 3,
+            borderRadius: 50,
+            padding: 2,
+            marginVertical: 3,
           }}
         >
-          <TouchableOpacity
-            activeOpacity={0.8}
-            onPress={() => navigation.goBack()}
-            style={{
-              backgroundColor: "#ddd",
-              borderRadius: 50,
-              padding: 2,
-              marginVertical: 3,
-            }}
-          >
-            <Feather name="chevron-left" size={24} color="black" />
-          </TouchableOpacity>
-          <Text style={{ paddingLeft: 10, fontSize: 20, fontWeight: "500" }}>
-            Edit Profile
-          </Text>
-          <Text style={{ paddingLeft: 10, fontSize: 20, fontWeight: "500" }}>
-            {/* Track */}
-          </Text>
-        </View>
+          <Feather name="chevron-left" size={24} color="black" />
+        </TouchableOpacity>
+        <Text style={{ paddingLeft: 10, fontSize: 20, fontWeight: "500" }}>
+          Edit Profile
+        </Text>
+        <Text style={{ paddingLeft: 10, fontSize: 20, fontWeight: "500" }}>
+          {/* Track */}
+        </Text>
+      </View>
         <View
           style={{
             paddingTop: 20,

@@ -120,6 +120,7 @@ const Profile = ({ navigation }) => {
         style={{
           flexDirection: "row",
           alignItems: "center",
+          justifyContent: "space-between",
           marginBottom: 15,
           paddingVertical: 3,
         }}
@@ -128,7 +129,6 @@ const Profile = ({ navigation }) => {
           activeOpacity={0.8}
           onPress={() => navigation.goBack()}
           style={{
-            backgroundColor: "#ddd",
             borderRadius: 50,
             padding: 2,
             marginVertical: 3,
@@ -138,6 +138,9 @@ const Profile = ({ navigation }) => {
         </TouchableOpacity>
         <Text style={{ paddingLeft: 10, fontSize: 20, fontWeight: "500" }}>
           Profile
+        </Text>
+        <Text style={{ paddingLeft: 10, fontSize: 20, fontWeight: "500" }}>
+          {/* Track */}
         </Text>
       </View>
       <View>
