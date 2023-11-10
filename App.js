@@ -106,17 +106,18 @@ function TabBar() {
       />
 
       <Tab.Screen
-        name="History"
+        name="Profile"
         options={{
           tabBarIcon: ({ focused }) => (
-            <MaterialCommunityIcons
-              name="history"
+            <Feather
+              name="user"
               size={focused ? 28 : 24}
               color={focused ? "#6c63ff" : "gray"}
             />
+            
           ),
         }}
-        component={OrderNav}
+        component={ProfileNav}
       />
     </Tab.Navigator>
   );
