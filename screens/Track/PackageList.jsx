@@ -60,6 +60,7 @@ const PackageList = ({ navigation }) => {
         </View>
         <ProductRow />
       </AnimatedView>
+      
     </SafeAreaView>
   );
 };
